@@ -39,9 +39,9 @@ namespace Tetris
         };
         public int[,] tetr5 = new int[3, 3]
         {
-            {0,0,5},
-            {0,0,5},
-            {0,5,5},
+            {0,5,0},
+            {0,5,0},
+            {5,5,0},
         };
         public int[,] tetr6 = new int[2, 2]
         {

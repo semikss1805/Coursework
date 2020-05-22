@@ -43,38 +43,41 @@ namespace Tetris
 
         private void KeyFunc(object sender, KeyEventArgs e)
         {
-            switch (e.KeyCode)
+            if (timer1.Enabled)
             {
-                case Keys.Down:
-                    Update(this, new EventArgs());
-                    break;
-                case Keys.Up:
-                    if (!IsOverlay())
-                    {
-                        ResetArea();
-                        currentShape.RotateShape();
-                        Merge();
-                        Invalidate();
-                    }
-                    break;
-                case Keys.Left:
-                    if (!CollideHor(-1))
-                    {
-                        ResetArea();
-                        currentShape.MoveLeft();
-                        Merge();
-                        Invalidate();
-                    }
-                    break;
-                case Keys.Right:
-                    if (!CollideHor(+1))
-                    {
-                        ResetArea();
-                        currentShape.MoveRight();
-                        Merge();
-                        Invalidate();
-                    }
-                    break;
+                switch (e.KeyCode)
+                {
+                    case Keys.Down:
+                        Update(this, new EventArgs());
+                        break;
+                    case Keys.Up:
+                        if (!IsOverlay())
+                        {
+                            ResetArea();
+                            currentShape.RotateShape();
+                            Merge();
+                            Invalidate();
+                        }
+                        break;
+                    case Keys.Left:
+                        if (!CollideHor(-1))
+                        {
+                            ResetArea();
+                            currentShape.MoveLeft();
+                            Merge();
+                            Invalidate();
+                        }
+                        break;
+                    case Keys.Right:
+                        if (!CollideHor(+1))
+                        {
+                            ResetArea();
+                            currentShape.MoveRight();
+                            Merge();
+                            Invalidate();
+                        }
+                        break;
+                }
             }
         }
 
@@ -280,7 +283,24 @@ namespace Tetris
                 }
             }
         }
-
+        public void DrawGridForNextShape(Graphics g)
+        {
+            for (int i = 0; i <= 4; i++)
+            {
+                g.DrawLine(Pens.Black, new Point(300, 150 + i * size), new Point(300 + 4 * size, 150 + i * size));
+            }
+            for (int i = 0; i <= 4; i++)
+            {
+                g.DrawLine(Pens.Black, new Point(300 + i * size, 150), new Point(300 + i * size, 150 + 4 * size));
+            }
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    g.FillRectangle(Brushes.Gray, new Rectangle(300 + j * size + 1, 150 + i * size + 1, size - 1, size - 1));
+                }
+            }
+        }
         public void DrawGrid(Graphics g)
         {
 
@@ -304,6 +324,21 @@ namespace Tetris
         {
             DrawGrid(e.Graphics);
             DrawMap(e.Graphics);
+            DrawGridForNextShape(e.Graphics);
+        }
+
+        private void PauseOrPlay(object sender, EventArgs e)
+        {
+            if (timer1.Enabled)
+            {
+                timer1.Enabled = false;
+                pauseLabel.Visible = true;
+            }
+            else
+            {
+                pauseLabel.Visible = false;
+                timer1.Enabled = true;
+            }
         }
     }
 }
