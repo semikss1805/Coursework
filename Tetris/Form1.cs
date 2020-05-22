@@ -13,8 +13,11 @@ namespace Tetris
     public partial class Form1 : Form
     {
         Shape currentShape;
-        int size;
-        int[,] map = new int[16, 8];
+        int size,
+            interval,
+            x,
+            y;
+        int[,] map = new int[20, 10];
         int lineRemoved;
         int score;
         public Form1()
@@ -25,17 +28,22 @@ namespace Tetris
         public void Init()
         {
             size = 25;
+            y = 20;
+            x = 10;
 
             score = 0;
             lineRemoved = 0;
             label1.Text = "Score: " + score;
             label2.Text = "Lines : " + lineRemoved;
 
-            currentShape = new Shape(3, 0);
+            map.GetUpperBound(0);
 
-            this.KeyUp += new KeyEventHandler(KeyFunc);
+            currentShape = new Shape(4, 0);
 
-            timer1.Interval = 400;
+            this.KeyDown += new KeyEventHandler(KeyFunc);
+
+            interval = 400;
+            timer1.Interval = interval;
             timer1.Tick += new EventHandler(Update);
 
             Invalidate();
@@ -83,6 +91,7 @@ namespace Tetris
 
         private void Update(object sender, EventArgs e)
         {
+            timer1.Interval = interval;
             ResetArea();
             if (!Collide())
             {
@@ -92,18 +101,20 @@ namespace Tetris
             {
                 Merge();
                 SliceMap();
-                timer1.Interval = 400;
-                currentShape = new Shape(3, 0);
+                timer1.Interval = 1000;
+                currentShape = new Shape(4, 0);
 
                 if (Collide())
                 {
+                    PauseOrPlay(this, new EventArgs());
+                    MessageBox.Show($"       GAMEOVER ( ✖ _ ✖ )\n\tScore: {score}\n\tLines :{lineRemoved}");
                     score = 0;
                     lineRemoved = 0;
                     label1.Text = "Score: " + score;
                     label2.Text = "Lines : " + lineRemoved;
-                    for (int i = 0; i < 16; i++)
+                    for (int i = 0; i < y; i++)
                     {
-                        for (int j = 0; j < 8; j++)
+                        for (int j = 0; j < x; j++)
                         {
                             map[i, j] = 0;
                         }
@@ -117,20 +128,20 @@ namespace Tetris
         {
             int count = 0;
             int curRemovedLines = 0;
-            for (int i = 0; i < 16; i++)
+            for (int i = 0; i < y; i++)
             {
                 count = 0;
-                for (int j = 0; j < 8; j++)
+                for (int j = 0; j < x; j++)
                 {
                     if (map[i, j] != 0)
                         count++;
                 }
-                if (count == 8)
+                if (count == x)
                 {
                     curRemovedLines++;
                     for (int k = i; k >= 1; k--)
                     {
-                        for (int o = 0; o < 8; o++)
+                        for (int o = 0; o < x; o++)
                         {
                             map[k, o] = map[k - 1, o];
                         }
@@ -151,21 +162,21 @@ namespace Tetris
             {
                 for (int j = currentShape.x; j < currentShape.x + currentShape.sizeMatrix; j++)
                 {
-                    if (j >= 0 && j <= 7)
+                    if (j >= 0 && j <= x - 1)
                     {
-                        if (i >= 0 && i <= 15)
+                        if (i >= 0 && i <= y - 1)
                         {
                             if (map[i, j] != 0 && currentShape.matrix[i - currentShape.y, j - currentShape.x] == 0)
                             {
                                 return true;
                             }
                         }
-                        if (i == 16)
+                        if (i == y)
                         {
                             return true;
                         }
                     }
-                    if (j == 8)
+                    if (j == x)
                     {
                         return true;
                     }
@@ -193,7 +204,7 @@ namespace Tetris
                 {
                     if (currentShape.matrix[i - currentShape.y, j - currentShape.x] != 0)
                     {
-                        if (i + 1 == 16)
+                        if (i + 1 == y)
                             return true;
                         if (map[i + 1, j] != 0)
                         {
@@ -212,7 +223,7 @@ namespace Tetris
                 {
                     if (currentShape.matrix[i - currentShape.y, j - currentShape.x] != 0)
                     {
-                        if (j + 1 * dir > 7 || j + 1 * dir < 0)
+                        if (j + 1 * dir > x - 1 || j + 1 * dir < 0)
                             return true;
                         if (map[i, j + 1 * dir] != 0)
                         {
@@ -236,7 +247,7 @@ namespace Tetris
             {
                 for (int j = currentShape.x; j < currentShape.x + currentShape.sizeMatrix; j++)
                 {
-                    if (i >= 0 && j >= 0 && i < 16 && j < 8)
+                    if (i >= 0 && j >= 0 && i < y && j < x)
                     {
                         if (currentShape.matrix[i - currentShape.y, j - currentShape.x] != 0)
                         {
@@ -248,9 +259,9 @@ namespace Tetris
         }
         public void DrawMap(Graphics e)
         {
-            for (int i = 0; i < 16; i++)
+            for (int i = 0; i < y; i++)
             {
-                for (int j = 0; j < 8; j++)
+                for (int j = 0; j < x; j++)
                 {
                     if (map[i, j] == 1)
                     {
@@ -287,39 +298,40 @@ namespace Tetris
         {
             for (int i = 0; i <= 4; i++)
             {
-                g.DrawLine(Pens.Black, new Point(300, 150 + i * size), new Point(300 + 4 * size, 150 + i * size));
+                g.DrawLine(Pens.Black, new Point(350, 150 + i * size), new Point(350 + 4 * size, 150 + i * size));
             }
             for (int i = 0; i <= 4; i++)
             {
-                g.DrawLine(Pens.Black, new Point(300 + i * size, 150), new Point(300 + i * size, 150 + 4 * size));
+                g.DrawLine(Pens.Black, new Point(350 + i * size, 150), new Point(350 + i * size, 150 + 4 * size));
             }
             for (int i = 0; i < 4; i++)
             {
                 for (int j = 0; j < 4; j++)
                 {
-                    g.FillRectangle(Brushes.Gray, new Rectangle(300 + j * size + 1, 150 + i * size + 1, size - 1, size - 1));
+                    g.FillRectangle(Brushes.Gray, new Rectangle(350 + j * size + 1, 150 + i * size + 1, size - 1, size - 1));
                 }
             }
         }
         public void DrawGrid(Graphics g)
         {
 
-            for (int i = 0; i <= 16; i++)
+            for (int i = 0; i <= y; i++)
             {
                 g.DrawLine(Pens.Black, new Point(50, 50 + i * size), new Point(50 + 8 * size, 50 + i * size));
             }
-            for (int i = 0; i <= 8; i++)
+            for (int i = 0; i <= x; i++)
             {
                 g.DrawLine(Pens.Black, new Point(50 + i * size, 50), new Point(50 + i * size, 50 + 16 * size));
             }
-            for (int i = 0; i < 16; i++)
+            for (int i = 0; i < y; i++)
             {
-                for (int j = 0; j < 8; j++)
+                for (int j = 0; j < x; j++)
                 {
                     g.FillRectangle(Brushes.Gray, new Rectangle(50 + j * size + 1, 50 + i * size + 1, size - 1, size - 1));
                 }
             }
         }
+
         private void OnPaint(object sender, PaintEventArgs e)
         {
             DrawGrid(e.Graphics);
@@ -327,17 +339,19 @@ namespace Tetris
             DrawGridForNextShape(e.Graphics);
         }
 
-        private void PauseOrPlay(object sender, EventArgs e)
+        public void PauseOrPlay(object sender, EventArgs e)
         {
             if (timer1.Enabled)
             {
                 timer1.Enabled = false;
                 pauseLabel.Visible = true;
+                playButton.Text = "▶";
             }
             else
             {
                 pauseLabel.Visible = false;
                 timer1.Enabled = true;
+                playButton.Text = "▉";
             }
         }
     }

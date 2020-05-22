@@ -21,9 +21,9 @@ namespace Tetris
         };
         public int[,] tetr2 = new int[3, 3]
         {
+            {2,0,0},
+            {2,2,0},
             {0,2,0},
-            {0,2,2},
-            {0,0,2},
         };
         public int[,] tetr3 = new int[3, 3]
         {
