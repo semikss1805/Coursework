@@ -11,7 +11,10 @@ namespace Tetris
         public int x;
         public int y;
         public int[,] matrix;
+        public int[,] nextMatrix;
         public int sizeMatrix;
+        public int sizeNextMatrix;
+        Random r = new Random();
         public int[,] tetr1 = new int[4, 4]
         {
             {0,1,0,0},
@@ -27,8 +30,8 @@ namespace Tetris
         };
         public int[,] tetr3 = new int[3, 3]
         {
-            {0,0,0},
-            {3,3,3},
+            {0,3,0},
+            {0,3,3},
             {0,3,0},
         };
         public int[,] tetr4 = new int[3, 3]
@@ -59,39 +62,52 @@ namespace Tetris
         {
             x = _x;
             y = _y;
-            GenerateMatrix();
+            r = new Random(GetHashCode() + (int)DateTime.Now.Ticks);
+            matrix = GenerateMatrix();
+            sizeMatrix = (int)Math.Sqrt(matrix.Length);
+            nextMatrix = GenerateMatrix();       
+            sizeNextMatrix = (int)Math.Sqrt(nextMatrix.Length);
         }
-        public void GenerateMatrix()
+        public void ResetShape(int _x, int _y)
         {
-            Random r = new Random();
-            sizeMatrix = 3;
-            switch (r.Next(1, 8))
-            {
-                case 1:
-                    sizeMatrix = 4;
-                    matrix = tetr1;
-                    break;
-                case 2:
-                    matrix = tetr2;
-                    break;
-                case 3:
-                    matrix = tetr3;
-                    break;
-                case 4:
-                    matrix = tetr4;
-                    break;
-                case 5:
-                    matrix = tetr5;
-                    break;
-                case 6:
-                    sizeMatrix = 2;
-                    matrix = tetr6;
-                    break;
-                case 7:
-                    matrix = tetr7;
-                    break;
-            }
+            x = _x;
+            y = _y;
+            r = new Random(GetHashCode() + (int)DateTime.Now.Ticks);
+            matrix = nextMatrix;
+            sizeMatrix = (int)Math.Sqrt(matrix.Length);
+            nextMatrix = GenerateMatrix();
+            sizeNextMatrix = (int)Math.Sqrt(nextMatrix.Length);
         }
+        public int[,] GenerateMatrix()
+        {
+            int[,] _matrix = tetr1;
+                switch (r.Next(1, 8))
+                {
+                    case 1:
+                        _matrix = tetr1;
+                        break;
+                    case 2:
+                        _matrix = tetr2;
+                        break;
+                    case 3:
+                        _matrix = tetr3;
+                        break;
+                    case 4:
+                        _matrix = tetr4;
+                        break;
+                    case 5:
+                        _matrix = tetr5;
+                        break;
+                    case 6:
+                        _matrix = tetr6;
+                        break;
+                    case 7:
+                        _matrix = tetr7;
+                        break;
+            }
+            return _matrix;
+        }
+
         public void RotateShape()
         {
             int[,] tempMatrix = new int[sizeMatrix, sizeMatrix];

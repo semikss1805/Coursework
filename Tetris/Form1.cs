@@ -36,10 +36,7 @@ namespace Tetris
             label1.Text = "Score: " + score;
             label2.Text = "Lines : " + lineRemoved;
 
-            map.GetUpperBound(0);
-
             currentShape = new Shape(4, 0);
-
             this.KeyDown += new KeyEventHandler(KeyFunc);
 
             interval = 400;
@@ -102,7 +99,7 @@ namespace Tetris
                 Merge();
                 SliceMap();
                 timer1.Interval = 1000;
-                currentShape = new Shape(4, 0);
+                currentShape.ResetShape(4,0);
 
                 if (Collide())
                 {
@@ -152,13 +149,17 @@ namespace Tetris
             {
                 score += (10 * (i + 1));
             }
+            if (interval > 100)
+            {
+                interval -= 4 * curRemovedLines;
+            }
             lineRemoved += curRemovedLines;
             label1.Text = "Score: " + score;
             label2.Text = "Lines : " + lineRemoved;
         }
         public bool IsOverlay()
         {
-            for (int i = currentShape.y; i < currentShape.y + currentShape.sizeMatrix; i++)
+            for (int i = currentShape.y; i < currentShape.y + currentShape. sizeMatrix; i++)
             {
                 for (int j = currentShape.x; j < currentShape.x + currentShape.sizeMatrix; j++)
                 {
@@ -257,6 +258,43 @@ namespace Tetris
                 }
             }
         }
+        public void DrawNextShape(Graphics e)
+        {
+            for (int i = 0; i < currentShape.sizeNextMatrix; i++)
+            {
+                for (int j = 0; j < currentShape.sizeNextMatrix; j++)
+                {
+                    if (currentShape.nextMatrix[i,j] == 1)
+                    {
+                        e.FillRectangle(Brushes.DeepSkyBlue, new Rectangle(375 + j * size + 3, 150 + i * size + 3, size - 3, size - 3));
+                    }
+                    if (currentShape.nextMatrix[i, j] == 2)
+                    {
+                        e.FillRectangle(Brushes.LightBlue, new Rectangle(375 + j * size + 3, 150 + i * size + 3, size - 3, size - 3));
+                    }
+                    if (currentShape.nextMatrix[i, j] == 3)
+                    {
+                        e.FillRectangle(Brushes.DarkOrange, new Rectangle(375 + j * size + 3, 150 + i * size + 3, size - 3, size - 3));
+                    }
+                    if (currentShape.nextMatrix[i, j] == 4)
+                    {
+                        e.FillRectangle(Brushes.BlanchedAlmond, new Rectangle(375 + j * size + 3, 150 + i * size + 3, size - 3, size - 3));
+                    }
+                    if(currentShape.nextMatrix[i, j] == 5)
+                    {
+                        e.FillRectangle(Brushes.LightGreen, new Rectangle(375 + j * size + 3, 150 + i * size + 3, size - 3, size - 3));
+                    }
+                    if (currentShape.nextMatrix[i, j] == 6)
+                    {
+                        e.FillRectangle(Brushes.Violet, new Rectangle(375 + j * size + 3, 150 + i * size + 3, size - 3, size - 3));
+                    }
+                    if (currentShape.nextMatrix[i, j] == 7)
+                    {
+                        e.FillRectangle(Brushes.FloralWhite, new Rectangle(375 + j * size + 3, 150 + i * size + 3, size - 3, size - 3));
+                    }
+                }
+            }
+        }
         public void DrawMap(Graphics e)
         {
             for (int i = 0; i < y; i++)
@@ -337,6 +375,7 @@ namespace Tetris
             DrawGrid(e.Graphics);
             DrawMap(e.Graphics);
             DrawGridForNextShape(e.Graphics);
+            DrawNextShape(e.Graphics);
         }
 
         public void PauseOrPlay(object sender, EventArgs e)
