@@ -56,7 +56,7 @@ namespace Tetris
                         Update(this, new EventArgs());
                         break;
                     case Keys.Up:
-                        if (!IsOverlay())
+                        if (!IsOverlapping())
                         {
                             ResetArea();
                             currentShape.RotateShape();
@@ -157,7 +157,7 @@ namespace Tetris
             label1.Text = "Score: " + score;
             label2.Text = "Lines : " + lineRemoved;
         }
-        public bool IsOverlay()
+        public bool IsOverlapping()
         {
             for (int i = currentShape.y; i < currentShape.y + currentShape. sizeMatrix; i++)
             {
