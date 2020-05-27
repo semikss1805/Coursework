@@ -119,7 +119,7 @@ namespace Tetris
                 }
             }
             matrix = tempMatrix;
-            int offset1 = (8 - (x + sizeMatrix));
+            int offset1 = (10 - (x - sizeMatrix));
             if (offset1 < 0)
             {
                 for (int i = 0; i < Math.Abs(offset1); i++)

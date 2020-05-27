@@ -13,7 +13,7 @@ namespace Tetris
     public partial class Form1 : Form
     {
         Shape currentShape;
-        int size,
+       int size,
             interval,
             x,
             y;
@@ -109,6 +109,7 @@ namespace Tetris
                     lineRemoved = 0;
                     label1.Text = "Score: " + score;
                     label2.Text = "Lines : " + lineRemoved;
+                    timer1.Interval = 400;
                     for (int i = 0; i < y; i++)
                     {
                         for (int j = 0; j < x; j++)
@@ -159,7 +160,7 @@ namespace Tetris
         }
         public bool IsOverlapping()
         {
-            for (int i = currentShape.y; i < currentShape.y + currentShape. sizeMatrix; i++)
+            for (int i = currentShape.y; i < currentShape.y + currentShape.sizeMatrix; i++)
             {
                 for (int j = currentShape.x; j < currentShape.x + currentShape.sizeMatrix; j++)
                 {
@@ -266,7 +267,7 @@ namespace Tetris
                 {
                     if (currentShape.nextMatrix[i,j] == 1)
                     {
-                        e.FillRectangle(Brushes.DeepSkyBlue, new Rectangle(375 + j * size + 3, 150 + i * size + 3, size - 3, size - 3));
+                        e.FillRectangle(Brushes.DeepSkyBlue, new Rectangle(350 + j * size + 3, 150 + i * size + 3, size - 3, size - 3));
                     }
                     if (currentShape.nextMatrix[i, j] == 2)
                     {
@@ -286,7 +287,7 @@ namespace Tetris
                     }
                     if (currentShape.nextMatrix[i, j] == 6)
                     {
-                        e.FillRectangle(Brushes.Violet, new Rectangle(375 + j * size + 3, 150 + i * size + 3, size - 3, size - 3));
+                        e.FillRectangle(Brushes.Violet, new Rectangle(375 + j * size + 3, 175 + i * size + 3, size - 3, size - 3));
                     }
                     if (currentShape.nextMatrix[i, j] == 7)
                     {
